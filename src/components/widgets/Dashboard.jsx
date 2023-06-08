@@ -57,7 +57,6 @@ export default function Dashboard() {
         skip: skip
       }
     })
-    // console.log(res.data.users)
     return setUsers(res.data.users)
   }
 
@@ -125,7 +124,7 @@ export default function Dashboard() {
                   <p className="font-bold text-xl opacity-80">Data Table</p>
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <input type="text" id="search" placeholder="Search..." className="py-2 px-3 outline-indigo-500 focus:drop-shadow-md border-2  rounded border-indigo-400 focus:shadow-blue-500 focus:border-none md:w-80" onChange={e => setCari(e.target.value)} value={cari} />
+                  <input type="search" id="search" placeholder="Search..." className="py-2 px-3 outline-indigo-500 focus:drop-shadow-md border-2  rounded border-indigo-400 focus:shadow-blue-500 focus:border-none md:w-80" onChange={e => setCari(e.target.value)} defaultValue={cari} />
                   <label htmlFor="search" className="sm:hidden"><FiSearch /></label>
                   <label htmlFor="search" className="hidden sm:block">
                     <button className="py-2 px-5 bg-[#5B6AD0] text-white rounded hover:bg-indigo-700">Search</button>
@@ -197,7 +196,11 @@ export default function Dashboard() {
                     {users.filter((item) => {
                       return cari.toLocaleLowerCase() === ''
                         ? item
-                        : item.firstName.toLocaleLowerCase().includes(cari)
+                        : item.firstName.toLocaleLowerCase().includes(cari) ||
+                        item.phone.toLocaleLowerCase().includes(cari) ||
+                        item.email.toLocaleLowerCase().includes(cari) ||
+                        item.hair.color.toLocaleLowerCase().includes(cari) ||
+                        item.hair.type.toLocaleLowerCase().includes(cari)
                     }).
                       map(user => {
                         return (
