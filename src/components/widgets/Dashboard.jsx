@@ -124,7 +124,7 @@ export default function Dashboard() {
                   <p className="font-bold text-xl opacity-80">Data Table</p>
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <input type="search" id="search" placeholder="Search..." className="py-2 px-3 outline-indigo-500 focus:drop-shadow-md border-2  rounded border-indigo-400 focus:shadow-blue-500 focus:border-none md:w-80" onChange={e => setCari(e.target.value)} defaultValue={cari} />
+                  <input type="search" id="search" placeholder="Search..." className="py-2 px-3 outline-indigo-500 focus:drop-shadow-md border-2 placeholder:lowercase rounded border-indigo-400 focus:shadow-blue-500 focus:border-none md:w-80" onChange={e => setCari(e.target.value.toLowerCase())} defaultValue={cari} />
                   <label htmlFor="search" className="sm:hidden"><FiSearch /></label>
                   <label htmlFor="search" className="hidden sm:block">
                     <button className="py-2 px-5 bg-[#5B6AD0] text-white rounded hover:bg-indigo-700">Search</button>
