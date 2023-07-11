@@ -3,3 +3,260 @@
   //   setSaveBJ({ ...saveBJ, [e.target.name]: e.target.value });
   //   console.log(e.target.value);
   // };
+
+
+/////////////////////////////////
+
+
+import React, { useState, Fragment } from "react";
+import {
+  Box,
+  Button,
+  FormControl,
+  MenuItem,
+  TextField,
+  Select,
+  withStyles,
+  InputBase,
+  Typography,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+
+const BootstrapInput = withStyles((theme) => ({
+  root: {
+    "label + &": {
+      marginTop: theme.spacing(3),
+    },
+  },
+  input: {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: theme.palette.background.paper,
+    border: "1px solid #ced4da",
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    "&:focus": {
+      borderRadius: 4,
+      borderColor: "#80bdff",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+    },
+  },
+}))(InputBase);
+
+const useStyles = makeStyles((theme) => ({
+  fieldSelect: {
+    alignSelf: "flex-start",
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+  //   textField: {
+  //     width: "200px",
+  //   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+      width: "25ch",
+    },
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: "1px solid #D7C32D",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    width: "24%",
+    height: "66%",
+    borderRadius: "10px",
+  },
+}));
+
+const AddElectronic = () => {
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const [namaBJ, setNamaBJ] = useState("");
+  const [statusBJ, setStatusBJ] = useState("");
+  const [deskBJ, setDeskBJ] = useState("");
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSumbitSaveBJ = async (e) => {
+    e.preventDefault();
+    const token = "Bearer " + localStorage.getItem("token");
+    try {
+      const formData = {
+        name: namaBJ,
+        status: statusBJ,
+        description: deskBJ,
+      };
+      const response = await fetch(
+        `https://gcore-master.doterb.com/api/v1/insurance_item`,
+        {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const dataSaved = await response.json();
+        console.log("data berhasil tersimpan", dataSaved);
+      } else {
+        console.log("Gagal Post", response.status);
+      }
+    } catch (error) {
+      console.error("Gagal bujang!", error);
+    }
+  };
+
+  return (
+    <Fragment>
+      <Button
+        color="primary"
+        variant="outlined"
+        style={{ marginRight: 8, textAlign: "center" }}
+        onClick={handleOpen}>
+        Tambah Barang Jaminan
+      </Button>
+      {/* Modal */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}>
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <h3
+              id="transition-modal-title"
+              style={{ marginLeft: 8, marginBottom: 8 }}>
+              Tambah Barang Jaminan
+            </h3>
+            {/* Form */}
+            <form>
+              <FormControl
+                className={classes.container}
+                noValidate
+                autoComplete="off">
+                <Box
+                  className={classes.root}
+                  sx={{
+                    width: "100%",
+                  }}>
+                  <Box width="10px">
+                    <Typography
+                      component={"h4"}
+                      sx={{
+                        marginBottom: "8px",
+                      }}>
+                      Nama Barang Jaminan
+                    </Typography>
+                    <TextField
+                      id="outlined-basic"
+                      label="Nama barang jaminan"
+                      variant="outlined"
+                      size="small"
+                      name="name"
+                      value={namaBJ}
+                      onChange={(e) => setNamaBJ(e.target.value)}
+                      sx={{
+                        marginTop: "8px",
+                      }}
+                      className={classes.textField}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography component={"h4"}>Pilih Status</Typography>
+                    <Select
+                      size="small"
+                      labelId="demo-customized-select-label"
+                      id="demo-customized-select"
+                      value={statusBJ}
+                      height={20}
+                      name="status"
+                      alignSelf="flex-end"
+                      placeholder="Status"
+                      onChange={(e) => setStatusBJ(e.target.value)}
+                      input={<BootstrapInput placeholder={statusBJ} />}>
+                      <MenuItem disabled>Pilih Status</MenuItem>
+                      <MenuItem value={true}>Aktif</MenuItem>
+                      <MenuItem value={false}>Non Aktif</MenuItem>
+                    </Select>
+                  </Box>
+                  <Box>
+                    <Typography component={"h4"}>
+                      Deskripsi Barang Jaminan
+                    </Typography>
+                    <TextField
+                      id="standard-basic"
+                      label="Deskripsi"
+                      variant="outlined"
+                      color="primary"
+                      name="description"
+                      size="small"
+                      value={deskBJ}
+                      onChange={(e) => setDeskBJ(e.target.value)}
+                    />
+                  </Box>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    style={{ marginRight: 8, textAlign: "center" }}
+                    type="submit"
+                    onClick={handleSumbitSaveBJ}>
+                    Simpan
+                  </Button>
+                </Box>
+              </FormControl>
+            </form>
+          </div>
+        </Fade>
+      </Modal>
+    </Fragment>
+  );
+};
+
+export default AddElectronic;
